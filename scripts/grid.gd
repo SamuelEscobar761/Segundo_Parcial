@@ -37,10 +37,11 @@ var final_touch = Vector2.ZERO
 var is_controlling = false
 
 # scoring variables and signals
-
+var combo_counter = 1
 
 # counter variables and signals
-
+var top_ui
+var moves = 5
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -48,6 +49,9 @@ func _ready():
 	randomize()
 	all_pieces = make_2d_array()
 	spawn_pieces()
+	top_ui = get_parent().get_node("top_ui")
+	top_ui.set_moves(moves)
+	$Timer.start()
 
 func make_2d_array():
 	var array = []
@@ -199,16 +203,19 @@ func find_matches():
 	
 func destroy_matched():
 	var was_matched = false
+	var pieces_destroyed = 0
 	for i in width:
 		for j in height:
 			if all_pieces[i][j] != null and all_pieces[i][j].matched:
 				was_matched = true
 				all_pieces[i][j].queue_free()
 				all_pieces[i][j] = null
+				pieces_destroyed += 1
 				
 	move_checked = true
 	if was_matched:
 		get_parent().get_node("collapse_timer").start()
+		top_ui.add_score(pieces_destroyed * 10 * combo_counter)
 	else:
 		swap_back()
 
@@ -251,15 +258,20 @@ func refill_columns():
 	check_after_refill()
 
 func check_after_refill():
+	
 	for i in width:
 		for j in height:
 			if all_pieces[i][j] != null and match_at(i, j, all_pieces[i][j].color):
 				find_matches()
 				get_parent().get_node("destroy_timer").start()
+				combo_counter += 1
 				return
 	state = MOVE
-	
+	combo_counter = 1
 	move_checked = false
+	moves -= 1
+	top_ui.set_moves(moves)
+	_on_timer_timeout()
 
 func _on_destroy_timer_timeout():
 	print("destroy")
@@ -273,5 +285,17 @@ func _on_refill_timer_timeout():
 	refill_columns()
 	
 func game_over():
+	moves = 5
+	combo_counter = 1
 	state = WAIT
-	print("game over")
+	$Timer.stop()
+
+
+func _on_timer_timeout():
+	var current_count = top_ui.get_current_count()
+	var score = top_ui.get_score()
+	if(score >= 300):
+		game_over()
+		get_tree().change_scene_to_file("res://scenes/game_over_win.tscn")
+	elif(current_count >= 60 || moves <= 0):
+		get_tree().change_scene_to_file("res://scenes/game_over_loose.tscn")

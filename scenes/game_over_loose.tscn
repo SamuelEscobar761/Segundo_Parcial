@@ -1,0 +1,54 @@
+[gd_scene load_steps=6 format=3 uid="uid://cm2sifss44dh1"]
+
+[ext_resource type="Texture2D" uid="uid://brp4euwugc18f" path="res://assets/background.png" id="1_8bynb"]
+[ext_resource type="Script" path="res://scripts/game_over.gd" id="1_wbj0h"]
+[ext_resource type="FontFile" uid="uid://b25431rxog83j" path="res://assets/fonts/Kenney Blocks.ttf" id="2_jg1px"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_kmk5s"]
+font = ExtResource("2_jg1px")
+font_size = 60
+
+[sub_resource type="LabelSettings" id="LabelSettings_bxu1a"]
+font = ExtResource("2_jg1px")
+font_size = 24
+
+[node name="game_over" type="Node2D"]
+script = ExtResource("1_wbj0h")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_8bynb")
+
+[node name="game_over_label" type="Label" parent="."]
+offset_left = 93.0
+offset_top = 426.0
+offset_right = 483.0
+offset_bottom = 519.0
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "GAME OVER"
+label_settings = SubResource("LabelSettings_kmk5s")
+horizontal_alignment = 1
+
+[node name="win_loose_label" type="Label" parent="."]
+offset_left = 95.0
+offset_top = 576.0
+offset_right = 485.0
+offset_bottom = 669.0
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "You lost"
+label_settings = SubResource("LabelSettings_kmk5s")
+horizontal_alignment = 1
+
+[node name="restart_label" type="Label" parent="."]
+offset_left = 82.0
+offset_top = 684.0
+offset_right = 502.0
+offset_bottom = 723.0
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "click anywhere to restart"
+label_settings = SubResource("LabelSettings_bxu1a")
+horizontal_alignment = 1
